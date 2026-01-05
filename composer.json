@@ -1,0 +1,83 @@
+{
+    "name": "webard/laravel-access-control",
+    "description": "A modular access control library for Laravel applications.",
+    "keywords": [
+        "webard",
+        "laravel",
+        "acl",
+        "voter",
+        "modular",
+        "permissions",
+        "roles",
+        "rbac",
+        "access-control"
+    ],
+    "homepage": "https://github.com/webard/access-control",
+    "support": {
+        "issues": "https://github.com/webard/access-control/issues",
+        "source": "https://github.com/webard/access-control"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "webard",
+            "email": "code@webard.me",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": "^8.4",
+        "illuminate/support": "^12.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.0",
+        "nunomaduro/collision": "^8.0",
+        "orchestra/testbench": "^9.0|^10.0",
+        "pestphp/pest": "^4.0",
+        "pestphp/pest-plugin-arch": "^4.0",
+        "pestphp/pest-plugin-laravel": "^3.0",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "rector/rector": "^2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webard\\LaravelAccessControl\\": "src/",
+            "Webard\\LaravelAccessControl\\Database\\Factories\\": "database/factories/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Webard\\LaravelAccessControl\\Tests\\": "tests/"
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": "@php ./vendor/bin/testbench package:discover --ansi",
+        "analyse": "phpstan analyse",
+        "lint": "pint",
+        "refactor": "rector",
+        "test": "pest",
+        "test:lint": "pint --test",
+        "test:refactor": "rector --dry-run"
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webard\\LaravelAccessControl\\AccessControlServiceProvider"
+            ],
+            "aliases": {
+                "AccessControl": "Webard\\LaravelAccessControl\\Facades\\AccessControl"
+            }
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "pestphp/pest-plugin": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
