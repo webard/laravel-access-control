@@ -5,11 +5,10 @@ declare(strict_types=1);
 namespace Webard\LaravelAccessControl;
 
 use Closure;
-use ReflectionClass;
-use ReflectionMethod;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Auth\User;
+use ReflectionClass;
+use ReflectionMethod;
 use Webard\LaravelAccessControl\Attributes\VoterForPermission;
 use Webard\LaravelAccessControl\Contracts\PermissionDefinition;
 

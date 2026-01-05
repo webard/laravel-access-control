@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Webard\LaravelAccessControl;
 
+use Illuminate\Support\Collection;
+use Illuminate\Support\Str;
+use ReflectionClass;
+use ReflectionClassConstant;
 use Webard\LaravelAccessControl\Attributes\PermissionDescription;
 use Webard\LaravelAccessControl\Attributes\PermissionGroup;
 use Webard\LaravelAccessControl\Attributes\PermissionName;
@@ -11,10 +15,6 @@ use Webard\LaravelAccessControl\Contracts\PermissionDefinition;
 use Webard\LaravelAccessControl\Contracts\PermissionGroupDefinition;
 use Webard\LaravelAccessControl\Dto\PermissionDto;
 use Webard\LaravelAccessControl\Exceptions\PermissionGroupRequiredException;
-use Illuminate\Support\Collection;
-use Illuminate\Support\Str;
-use ReflectionClass;
-use ReflectionClassConstant;
 
 final readonly class PermissionReflector
 {

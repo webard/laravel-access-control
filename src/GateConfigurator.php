@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Webard\LaravelAccessControl;
 
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate as FacadesGate;
 
