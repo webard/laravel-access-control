@@ -8,7 +8,38 @@
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/webard/laravel-access-control.svg?style=flat-square)](https://packagist.org/packages/webard/laravel-access-control)
 [![Total Downloads](https://img.shields.io/packagist/dt/webard/laravel-access-control.svg?style=flat-square)](https://packagist.org/packages/webard/laravel-access-control)
 
-A modular access control library for Laravel applications that uses **enum-based permissions** and a **voter system**. Perfect for modular monolith architectures where different modules can define their own permission logic.
+A modular access control library for Laravel applications that uses **enum-based permissions** and a **voter system**. Perfect for modular monolith architectures where different modules can define their own permission logic and extend existing.
+
+### Example
+
+Imagine two modules: **Product** and **ProductGallery**. The Product module knows nothing about ProductGallery, but ProductGallery should block product deletion until all galleries are removed.
+
+**Product module** defines the permission:
+```php
+enum ProductPermission: string implements PermissionDefinition
+{
+    case Delete = 'product.delete';
+}
+```
+
+**ProductGallery module** registers a voter to add its constraint:
+```php
+// In ProductGalleryServiceProvider
+$registry = resolve(VoterRegistry::class);
+
+$registry->register(
+    ProductPermission::Delete,
+
+    function (User $user, Product $product = null): Response {
+        if ($product && $product->galleries()->exists()) {
+            return Response::deny('Cannot delete product with galleries.');
+        }
+        return Response::allow();
+    }
+);
+```
+
+This library allows achieving such behavior without tightly coupling the two modules.
 
 ## Key Features
 
@@ -66,6 +97,8 @@ enum ProductPermission: string implements PermissionDefinition
 }
 ```
 
+> **Tip:** In modular applications, consider prefixing permission values with your module name (e.g., `pim-module.product.view`, `inventory-module.stock.update`) to avoid conflicts between modules and make it clear which module owns each permission.
+
 ### 2. Register Permissions
 
 Register your permission enums in a service provider:
@@ -73,21 +106,19 @@ Register your permission enums in a service provider:
 ```php
 <?php
 
-namespace App\Providers;
+namespace Modules\Category\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Webard\LaravelAccessControl\PermissionRegistry;
-use App\Permissions\ProductPermission;
-use App\Permissions\CategoryPermission;
+use Modules\Category\Permissions\CategoryPermission;
 
-class PermissionServiceProvider extends ServiceProvider
+class CategoryModuleServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
         $registry = resolve(PermissionRegistry::class);
         
         $registry->register([
-            ProductPermission::class,
             CategoryPermission::class,
         ]);
     }
@@ -103,26 +134,43 @@ Voters allow you to add custom authorization logic to permissions. The main adva
 ```php
 <?php
 
+namespace Modules\Product\Providers;
+
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\ServiceProvider;
+use Webard\LaravelAccessControl\PermissionRegistry;
 use Webard\LaravelAccessControl\VoterRegistry;
 use App\Models\User;
-use App\Models\Channel;
-use App\Permissions\ChannelPermission;
+use Modules\Category\Models\Category;
+use Modules\Category\Permissions\CategoryPermission;
+use Modules\Product\Permissions\ProductPermission;
 
-$registry = resolve(VoterRegistry::class);
+class ProductModuleServiceProvider extends ServiceProvider
+{
+    public function boot(): void {
+        $registry = resolve(PermissionRegistry::class);
+        
+        $registry->register([
+            ProductPermission::class,
+        ]);
 
-$registry->register(
-    CategoryPermission::Delete,
-    function (User $user, Category $category = null): Response {
-        if ($category->products()->exists()) {
-            return Response::deny(
-                'Cannot delete category with assigned products.'
-            );
-        }
+        $registry = resolve(VoterRegistry::class);
 
-        return Response::allow();
+        $registry->register(
+            CategoryPermission::Delete,
+
+            function (User $user, Category $category = null): Response {
+                if ($category->products()->exists()) {
+                    return Response::deny(
+                        'Cannot delete category with assigned products.'
+                    );
+                }
+
+                return Response::allow();
+            }
+        );
     }
-);
+}
 ```
 
 #### Using Voter Classes
@@ -245,13 +293,13 @@ final class ProductGroup implements PermissionGroupDefinition
 ```php
 <?php
 
-namespace App\Permissions;
+namespace Modules\Product\Permissions;
 
 use Webard\LaravelAccessControl\Contracts\PermissionDefinition;
 use Webard\LaravelAccessControl\Attributes\PermissionGroup;
 use Webard\LaravelAccessControl\Attributes\PermissionName;
 use Webard\LaravelAccessControl\Attributes\PermissionDescription;
-use App\Permissions\Groups\ProductGroup;
+use Modules\Product\PermissionGroups\ProductGroup;
 
 #[PermissionGroup(ProductGroup::class)]
 enum ProductPermission: string implements PermissionDefinition
