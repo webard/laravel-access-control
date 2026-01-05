@@ -18,6 +18,19 @@ A modular access control library for Laravel applications that uses **enum-based
 - 🏷️ **Permission metadata** - Add names, descriptions, and groups to permissions via PHP attributes
 - ⚡ **Laravel Gate integration** - Works seamlessly with Laravel's authorization system
 
+## When to Use This Package
+
+This package is designed primarily for **modular monolith architectures** where your application is split into independent modules (e.g., using [nWidart/laravel-modules](https://github.com/nWidart/laravel-modules) or [InterNACHI/modular](https://github.com/InterNACHI/modular)).
+
+The key advantage of this package is that **voters can be registered from any module**, allowing each module to define its own authorization constraints without modifying the core application or other modules.
+
+### When NOT to Use This Package
+
+If you're building a traditional Laravel monolith without modular architecture, you probably don't need this package. In that case, the following solutions are sufficient:
+
+- **[Laravel Policies](https://laravel.com/docs/authorization#creating-policies)** - Built-in authorization system, perfect for simple applications
+- **[spatie/laravel-permission](https://github.com/spatie/laravel-permission)** - Excellent package for role and permission management in monolithic applications
+
 ## Requirements
 
 - PHP 8.4+
@@ -296,15 +309,113 @@ This allows different modules to add constraints to permissions without knowing 
 | Cross-module logic | Difficult | Easy |
 | Registration | Automatic by convention | Explicit |
 
-## User Model Requirements
+## Model Setup
 
-Your User model must implement a `hasPermissionTo` method:
+The model on which authorization checks are performed (typically `User`) must implement the `AuthControllable` interface.
+
+This package provides three traits for managing permissions:
+
+### HasRoles (Recommended)
+
+Use this trait when users receive permissions **only through roles**. This is the recommended approach for most applications.
 
 ```php
-public function hasPermissionTo(PermissionDefinition $permission): bool
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Webard\LaravelAccessControl\Contracts\AuthControllable;
+use Webard\LaravelAccessControl\Traits\HasRoles;
+
+class User extends Authenticatable implements AuthControllable
 {
-    // Your permission checking logic
-    // e.g., check against roles, direct permissions, etc.
+    use HasRoles;
+
+    /**
+     * Get roles assigned to the user.
+     */
+    public function getRoles(): iterable
+    {
+        return $this->roles; // Your roles relationship
+    }
+}
+```
+
+### HasPermissions
+
+Use this trait for models that store permissions directly (e.g., a `Role` model). This trait provides `givePermissionTo()` and `revokePermissionTo()` methods.
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
+use Webard\LaravelAccessControl\Contracts\HasPermissionsContract;
+use Webard\LaravelAccessControl\Traits\HasPermissions;
+
+class Role extends Model implements HasPermissionsContract
+{
+    use HasPermissions;
+
+    protected $casts = [
+        'permissions' => 'array',
+    ];
+
+    protected function getPermissions(): Collection
+    {
+        return new Collection($this->permissions ?? []);
+    }
+
+    protected function setPermissions(Collection $permissions): void
+    {
+        $this->permissions = $permissions->toArray();
+        $this->save();
+    }
+}
+```
+
+> You can also use this trait directly on User.
+
+### HasRolesAndPermissions
+
+Use this trait when users can receive permissions **both through roles AND directly**. Permissions are checked in both sources.
+
+```php
+<?php
+
+namespace App\Models;
+
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
+use Webard\LaravelAccessControl\Contracts\AuthControllable;
+use Webard\LaravelAccessControl\Traits\HasRolesAndPermissions;
+
+class User extends Authenticatable implements AuthControllable
+{
+    use HasRolesAndPermissions;
+
+    protected $casts = [
+        'permissions' => 'array',
+    ];
+
+    public function getRoles(): iterable
+    {
+        return $this->roles;
+    }
+
+    protected function getPermissions(): Collection
+    {
+        return new Collection($this->permissions ?? []);
+    }
+
+    protected function setPermissions(Collection $permissions): void
+    {
+        $this->permissions = $permissions->toArray();
+        $this->save();
+    }
 }
 ```
 
