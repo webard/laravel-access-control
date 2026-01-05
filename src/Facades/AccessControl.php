@@ -1,16 +1,16 @@
 <?php
 
-namespace Webard\AccessControl\Facades;
+namespace Webard\LaravelAccessControl\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Webard\AccessControl\AccessControl
+ * @see \Webard\LaravelAccessControl\AccessControl
  */
 class AccessControl extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Webard\AccessControl\AccessControl::class;
+        return \Webard\LaravelAccessControl\AccessControl::class;
     }
 }

@@ -1,0 +1,37 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Webard\LaravelAccessControl\Traits;
+
+use Illuminate\Auth\Authenticatable;
+use Webard\LaravelAccessControl\Contracts\PermissionDefinition;
+
+/**
+ * @mixin Authenticatable
+ *
+ * @phpstan-ignore trait.unused
+ */
+trait HasPermissions
+{
+    public function hasPermissionTo(PermissionDefinition $permission): bool
+    {
+        return $this->getPermissions()->contains($permission->value);
+    }
+
+    public function givePermissionTo(PermissionDefinition $permission): void
+    {
+        if (! $this->hasPermissionTo($permission)) {
+            $this->setPermissions($this->getPermissions()->push($permission->value));
+        }
+    }
+
+    public function revokePermissionTo(PermissionDefinition $permission): void
+    {
+        $this->setPermissions($this->getPermissions()->filter(fn (PermissionDefinition $perm): bool => $perm !== $permission)->values());
+    }
+
+    abstract protected function getPermissions(): \Illuminate\Support\Collection;
+
+    abstract protected function setPermissions(\Illuminate\Support\Collection $permissions): void;
+}

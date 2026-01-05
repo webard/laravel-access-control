@@ -7,6 +7,7 @@ namespace Webard\LaravelAccessControl;
 use Illuminate\Auth\Access\Response;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate as FacadesGate;
+use Webard\LaravelAccessControl\Contracts\HasPermissionsContract;
 
 final readonly class GateConfigurator
 {
@@ -30,7 +31,7 @@ final readonly class GateConfigurator
                         return Response::deny('Unauthenicated.');
                     }
 
-                    if (! $user->hasPermissionTo($permission)) {
+                    if ($user instanceof HasPermissionsContract && ! $user->hasPermissionTo($permission)) {
                         return Response::deny('Unauthorized.');
                     }
 
