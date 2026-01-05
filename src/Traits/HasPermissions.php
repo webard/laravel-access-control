@@ -28,7 +28,7 @@ trait HasPermissions
 
     public function revokePermissionTo(PermissionDefinition $permission): void
     {
-        $this->setPermissions($this->getPermissions()->filter(fn (PermissionDefinition $perm): bool => $perm !== $permission)->values());
+        $this->setPermissions($this->getPermissions()->filter(fn (string $perm): bool => $perm !== $permission->value)->values());
     }
 
     abstract protected function getPermissions(): \Illuminate\Support\Collection;
