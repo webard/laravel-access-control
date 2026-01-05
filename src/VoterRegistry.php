@@ -29,7 +29,33 @@ final class VoterRegistry
         public private(set) array $permissions = [],
     ) {}
 
-    public function register(PermissionDefinition $permission, Closure $voter): void
+    public function register(string | array | PermissionDefinition $voterClassOrPermission, ?Closure $voter = null): void
+    {
+        // Handle array of classes or permissions
+        if (is_array($voterClassOrPermission)) {
+            foreach ($voterClassOrPermission as $item) {
+                $this->register($item, $voter);
+            }
+
+            return;
+        }
+
+        // Handle single class
+        if (is_string($voterClassOrPermission)) {
+            $this->registerClass($voterClassOrPermission);
+
+            return;
+        }
+
+        // Handle PermissionDefinition with closure
+        if ($voter === null) {
+            throw new \InvalidArgumentException('Voter closure must be provided when registering by PermissionDefinition.');
+        }
+
+        $this->registerCallback($voterClassOrPermission, $voter);
+    }
+
+    public function registerCallback(PermissionDefinition $permission, Closure $voter): void
     {
         $identifier = spl_object_hash($voter);
 
