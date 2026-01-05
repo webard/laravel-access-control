@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Webard\LaravelAccessControl;
 
+use Illuminate\Support\Collection;
 use Webard\LaravelAccessControl\Dto\PermissionDto;
 use Webard\LaravelAccessControl\Dto\PermissionGroupDto;
-use Illuminate\Support\Collection;
 
 final readonly class PermissionCollection
 {

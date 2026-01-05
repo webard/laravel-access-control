@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Webard\LaravelAccessControl;
 
-use Illuminate\Auth\Access\Gate;
 use Illuminate\Auth\Access\Response;
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Facades\Gate as FacadesGate;
 
@@ -36,13 +34,11 @@ final readonly class GateConfigurator
                         return Response::deny('Unauthorized.');
                     }
 
-                    $vote = $this->voterRegistry->vote(
+                    return $this->voterRegistry->vote(
                         $permission,
                         $user,
                         ...$arguments
                     );
-
-                    return $vote;
                 }
             );
         }
