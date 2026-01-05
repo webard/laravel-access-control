@@ -11,12 +11,10 @@ class AccessControlServiceProvider extends ServiceProvider
     {
         $this->app->singleton(fn (): PermissionRegistry => new PermissionRegistry);
         $this->app->singleton(fn (): VoterRegistry => new VoterRegistry);
-
     }
 
     public function boot(): void
     {
-
         resolve(GateConfigurator::class)->configure();
     }
 }
