@@ -58,11 +58,13 @@
         "analyse": "phpstan analyse",
         "lint": "pint",
         "refactor": "rector",
-        "coverage": "@test --coverage --exactly=100",
+        "coverage": "@test --coverage",
         "type-coverage": "@test --type-coverage",
         "test": "pest",
         "test:lint": "pint --test",
-        "test:refactor": "rector --dry-run"
+        "test:refactor": "rector --dry-run",
+        "test:type-coverage": "@test --type-coverage --exactly=100",
+        "test:coverage": "@test --coverage --exactly=100"
     },
     "extra": {
         "laravel": {
