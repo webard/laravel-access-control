@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Webard\LaravelAccessControl\Traits;
 
-use Webard\LaravelAccessControl\Contracts\HasPermissionsContract;
+use Webard\LaravelAccessControl\Contracts\AuthControllable;
 
 /**
  * @phpstan-ignore trait.unused
@@ -23,7 +23,7 @@ trait HasRoles
     }
 
     /**
-     * @return iterable<HasPermissionsContract>
+     * @return iterable<AuthControllable>
      */
     abstract public function getRoles(): iterable;
 }

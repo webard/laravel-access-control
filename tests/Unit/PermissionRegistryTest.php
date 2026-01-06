@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Webard\LaravelAccessControl\Exceptions\PermissionAlreadyRegisteredException;
 use Webard\LaravelAccessControl\PermissionRegistry;
 use Webard\LaravelAccessControl\Tests\Fixtures\Permissions\CategoryPermission;
+use Webard\LaravelAccessControl\Tests\Fixtures\Permissions\DuplicateProductPermission;
 use Webard\LaravelAccessControl\Tests\Fixtures\Permissions\ProductPermission;
 
 beforeEach(function (): void {
@@ -48,9 +49,8 @@ describe('PermissionRegistry', function (): void {
     it('throws exception when registering permission with duplicate value', function (): void {
         $this->registry->register(ProductPermission::class);
 
-        // CategoryPermission has different values, so this should work
-        expect(fn () => $this->registry->register(CategoryPermission::class))
-            ->not->toThrow(PermissionAlreadyRegisteredException::class);
+        expect(fn () => $this->registry->register(DuplicateProductPermission::class))
+            ->toThrow(PermissionAlreadyRegisteredException::class);
     });
 
     it('can check if definition is registered', function (): void {

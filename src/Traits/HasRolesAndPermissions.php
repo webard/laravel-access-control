@@ -10,10 +10,10 @@ namespace Webard\LaravelAccessControl\Traits;
 trait HasRolesAndPermissions
 {
     use HasPermissions {
-        hasPermissionTo as public hasDirectPermissionTo;
+        HasPermissions::hasPermissionTo as hasDirectPermissionTo;
     }
     use HasRoles {
-        hasPermissionTo as public hasRolePermissionTo;
+        HasRoles::hasPermissionTo as hasRolePermissionTo;
     }
 
     public function hasPermissionTo($permission): bool

@@ -59,7 +59,7 @@ final class VoterRegistry
     {
         $identifier = spl_object_hash($voter);
 
-        if (isset($this->voters[self::class][$permission->name][$identifier])) {
+        if (isset($this->voters[self::class][$permission->value][$identifier])) {
             return;
         }
 

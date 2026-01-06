@@ -401,10 +401,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use Webard\LaravelAccessControl\Contracts\HasPermissionsContract;
+use Webard\LaravelAccessControl\Contracts\AuthControllable;
 use Webard\LaravelAccessControl\Traits\HasPermissions;
 
-class Role extends Model implements HasPermissionsContract
+class Role extends Model implements AuthControllable
 {
     use HasPermissions;
 

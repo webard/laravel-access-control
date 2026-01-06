@@ -152,5 +152,18 @@ describe('VoterRegistry', function (): void {
 
             expect($result->allowed())->toBeTrue();
         });
+
+        it('does not register duplicate voters', function (): void {
+            $voter = fn (Authenticatable $user): Response => Response::allow();
+
+            $this->registry->register(ProductPermission::Delete, $voter);
+            $countAfterFirst = $this->registry->countVoters(ProductPermission::Delete);
+
+            $this->registry->register(ProductPermission::Delete, $voter);
+            $countAfterSecond = $this->registry->countVoters(ProductPermission::Delete);
+
+            expect($countAfterFirst)->toBe(1);
+            expect($countAfterSecond)->toBe(1);
+        });
     });
 });

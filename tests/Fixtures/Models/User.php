@@ -7,13 +7,13 @@ namespace Webard\LaravelAccessControl\Tests\Fixtures\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Collection;
-use Webard\LaravelAccessControl\Contracts\HasPermissionsContract;
-use Webard\LaravelAccessControl\Traits\HasPermissions;
+use Webard\LaravelAccessControl\Contracts\AuthControllable;
+use Webard\LaravelAccessControl\Traits\HasRolesAndPermissions;
 
-class User extends Authenticatable implements HasPermissionsContract
+class User extends Authenticatable implements AuthControllable
 {
     use HasFactory;
-    use HasPermissions;
+    use HasRolesAndPermissions;
 
     protected $fillable = [
         'name',
@@ -45,5 +45,10 @@ class User extends Authenticatable implements HasPermissionsContract
     {
         $this->permissions = $permissions->toArray();
         $this->save();
+    }
+
+    public function getRoles(): iterable
+    {
+        return [];
     }
 }

@@ -37,6 +37,7 @@
         "pestphp/pest": "^4.0",
         "pestphp/pest-plugin-arch": "^4.0",
         "pestphp/pest-plugin-laravel": "^4.0",
+        "pestphp/pest-plugin-type-coverage": "^4.0",
         "phpstan/phpstan-deprecation-rules": "^2.0",
         "phpstan/phpstan-phpunit": "^2.0",
         "rector/rector": "^2.0"
@@ -57,6 +58,8 @@
         "analyse": "phpstan analyse",
         "lint": "pint",
         "refactor": "rector",
+        "coverage": "@test --coverage --exactly=100",
+        "type-coverage": "@test --type-coverage",
         "test": "pest",
         "test:lint": "pint --test",
         "test:refactor": "rector --dry-run"
