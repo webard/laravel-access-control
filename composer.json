@@ -27,7 +27,7 @@
     ],
     "require": {
         "php": "^8.4",
-        "illuminate/support": "^12.20"
+        "illuminate/support": "^12.20|^13.0"
     },
     "require-dev": {
         "larastan/larastan": "^3.0",
