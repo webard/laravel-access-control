@@ -6,9 +6,6 @@ namespace Webard\LaravelAccessControl\Dto;
 
 use Webard\LaravelAccessControl\Contracts\PermissionDefinition;
 
-/**
- * @internal
- */
 final class PermissionDto
 {
     public function __construct(

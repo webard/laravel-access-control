@@ -6,9 +6,6 @@ namespace Webard\LaravelAccessControl\Dto;
 
 use Illuminate\Support\Collection;
 
-/**
- * @internal
- */
 final class PermissionGroupDto
 {
     public function __construct(
