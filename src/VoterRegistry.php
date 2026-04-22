@@ -48,7 +48,7 @@ final class VoterRegistry
         }
 
         // Handle PermissionDefinition with closure
-        if (! $voter instanceof \Closure) {
+        if (! $voter instanceof Closure) {
             throw new \InvalidArgumentException('Voter closure must be provided when registering by PermissionDefinition.');
         }
 
