@@ -98,6 +98,52 @@ describe('HasRoles trait', function (): void {
         $result = $userWithRoles->hasPermissionTo(CategoryPermission::Create);
         expect($result)->toBeFalse();
     });
+
+    it('memoises the resolution and does not re-iterate roles', function (): void {
+        $userWithRoles = new class
+        {
+            use HasRoles;
+
+            private array $rolesCollection = [];
+
+            public function getRoles(): iterable
+            {
+                return $this->rolesCollection;
+            }
+
+            public function setRoles(array $roles): void
+            {
+                $this->rolesCollection = $roles;
+            }
+        };
+
+        $role = new class
+        {
+            public int $calls = 0;
+
+            public function hasPermissionTo($permission): bool
+            {
+                $this->calls++;
+
+                return false;
+            }
+        };
+
+        $userWithRoles->setRoles([$role]);
+
+        $userWithRoles->hasPermissionTo(CategoryPermission::Create);
+        $userWithRoles->hasPermissionTo(CategoryPermission::Create);
+        $userWithRoles->hasPermissionTo(CategoryPermission::Create);
+
+        // The role is consulted once; subsequent checks hit the per-instance memo.
+        expect($role->calls)->toBe(1);
+
+        // Clearing the memo forces re-evaluation.
+        $userWithRoles->forgetResolvedPermissions();
+        $userWithRoles->hasPermissionTo(CategoryPermission::Create);
+
+        expect($role->calls)->toBe(2);
+    });
 });
 
 describe('HasRolesAndPermissions trait', function (): void {
