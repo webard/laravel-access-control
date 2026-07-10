@@ -1,5 +1,8 @@
 # Laravel Access Control
 
+> [!IMPORTANT]
+> This project has moved to **[happenv-com/laravel-access-control](https://github.com/happenv-com/laravel-access-control)**. Please update your references and follow the new repository for future development.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://banners.beyondco.de/Laravel%20Access%20Control.png?theme=dark&packageManager=composer+require&packageName=webard%2Flaravel-access-control&pattern=wiggle&style=style_1&description=Control+access+using+Enums+and+Permission+Voters&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg">
   <img alt="Laravel Access Control" src="https://banners.beyondco.de/Laravel%20Access%20Control.png?theme=light&packageManager=composer+require&packageName=webard%2Flaravel-access-control&pattern=wiggle&style=style_1&description=Control+access+using+Enums+and+Permission+Voters&md=1&showWatermark=0&fontSize=100px&images=https%3A%2F%2Flaravel.com%2Fimg%2Flogomark.min.svg">
